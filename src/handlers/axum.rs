@@ -109,6 +109,10 @@ impl<DB: DatabaseAdapter> AxumIntegration<DB> for Arc<BetterAuth<DB>> {
                         router =
                             router.route(&route.path, axum::routing::patch(handler_fn.clone()));
                     }
+                    HttpMethod::Options => {
+                        router =
+                            router.route(&route.path, axum::routing::options(handler_fn.clone()));
+                    }
                     _ => {} // Skip unsupported methods
                 }
             }
