@@ -438,7 +438,10 @@ pub(crate) async fn callback_core<DB: DatabaseAdapter>(
         .ok_or_else(|| AuthError::bad_request(format!("Unknown provider: {}", provider_name)))?;
 
     // Exchange code for tokens
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder()
+        .user_agent("better-auth")
+        .build()
+        .map_err(|e| AuthError::internal(format!("Failed to build HTTP client: {e}")))?;
     let token_resp = client
         .post(&provider.token_url)
         .header("Accept", "application/json")
